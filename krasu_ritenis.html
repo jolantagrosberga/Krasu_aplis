@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krāsu Ritenis — Maskas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --bg:#F7F3EE;--surface:#fff;--border:rgba(0,0,0,0.08);
+    --text:#1a1712;--muted:#7a7268;
+  }
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    min-height:100vh;display:flex;flex-direction:column;
+    align-items:center;padding:2.5rem 1rem 5rem;
+  }
+  header{text-align:center;margin-bottom:1.8rem;}
+  header h1{
+    font-family:'Fraunces',serif;font-weight:900;
+    font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-0.03em;
+  }
+  header p{color:var(--muted);font-size:0.88rem;margin-top:0.4rem;font-weight:300;}
+
+  /* LEGEND */
+  .legend{display:flex;gap:1.6rem;margin-bottom:2rem;flex-wrap:wrap;justify-content:center;}
+  .leg{display:flex;align-items:center;gap:0.45rem;font-size:0.76rem;color:var(--muted);}
+  .leg-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.18);}
+
+  /* OUTER LAYOUT: wheel-col | right-col */
+  .outer{
+    display:flex;gap:2rem;align-items:flex-start;
+    width:100%;max-width:1120px;flex-wrap:wrap;justify-content:center;
+  }
+
+  /* LEFT COL: canvas + b/w cards stacked */
+  .left-col{
+    display:flex;flex-direction:column;align-items:center;gap:1.2rem;
+    flex-shrink:0;
+  }
+
+  #wheel{cursor:default;filter:drop-shadow(0 8px 28px rgba(0,0,0,0.13));}
+
+  .hint{font-size:0.74rem;color:var(--muted);text-align:center;}
+
+  /* Harmony tabs */
+  .harmony-tabs{
+    display:flex;gap:0.35rem;background:rgba(0,0,0,0.06);
+    border-radius:11px;padding:0.28rem;
+  }
+  .htab{
+    font-family:'DM Sans',sans-serif;font-size:0.76rem;font-weight:500;
+    padding:0.4rem 0.85rem;border-radius:8px;border:none;
+    background:transparent;color:var(--muted);cursor:pointer;transition:all 0.17s;
+    white-space:nowrap;
+  }
+  .htab:hover{color:var(--text);background:rgba(0,0,0,0.05);}
+  .htab.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.11);}
+
+  /* B&W cards row */
+  .bw-row{
+    display:flex;gap:0.8rem;width:100%;max-width:460px;
+  }
+
+  .bw-card{
+    flex:1;border-radius:16px;padding:1rem 1.1rem;
+    cursor:default;border:1px solid var(--border);
+    transition:box-shadow 0.2s;
+  }
+  .bw-card:hover{box-shadow:0 4px 18px rgba(0,0,0,0.1);}
+
+  .bw-card.white-card{background:#fff;}
+  .bw-card.black-card{background:#1a1712;color:#f0ece4;border-color:#000;}
+
+  .bw-card .bw-name{
+    font-family:'Fraunces',serif;font-weight:700;font-size:1rem;
+    margin-bottom:0.3rem;
+  }
+  .bw-card .bw-tags{
+    display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.55rem;
+  }
+  .bw-card .bw-tag{
+    font-size:0.68rem;padding:0.15rem 0.5rem;border-radius:20px;
+    background:rgba(0,0,0,0.07);color:inherit;
+  }
+  .black-card .bw-tag{background:rgba(255,255,255,0.12);}
+  .bw-card .bw-text{
+    font-family:'Fraunces',serif;font-style:italic;
+    font-size:0.78rem;line-height:1.6;opacity:0.75;
+  }
+
+  /* RIGHT PANEL */
+  .right{
+    flex:1;min-width:280px;max-width:420px;
+    display:flex;flex-direction:column;gap:1rem;
+  }
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:20px;padding:1.4rem;
+  }
+  .card-label{
+    font-size:0.63rem;font-weight:500;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem;
+  }
+
+  /* Color info */
+  .color-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
+  .color-circle{
+    width:54px;height:54px;border-radius:50%;
+    border:2px solid rgba(0,0,0,0.08);flex-shrink:0;
+    transition:background 0.3s,box-shadow 0.3s;
+  }
+  .color-meta h2{
+    font-family:'Fraunces',serif;font-size:1.3rem;font-weight:700;line-height:1.1;
+  }
+  .type-pill{
+    display:inline-block;margin-top:0.3rem;
+    font-size:0.66rem;font-weight:500;letter-spacing:0.07em;
+    text-transform:uppercase;padding:0.18rem 0.55rem;border-radius:20px;
+  }
+  .pill-primary  {background:#FFF3CD;color:#8a6300;}
+  .pill-secondary{background:#E8F4E8;color:#2d6a2d;}
+  .pill-tertiary {background:#f0f0f0;color:#5a5a5a;}
+
+  .section{border-top:1px solid var(--border);padding-top:0.9rem;margin-top:0.2rem;}
+  .section-label{
+    font-size:0.67rem;font-weight:500;letter-spacing:0.1em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:0.45rem;
+  }
+  .section p{font-size:0.83rem;line-height:1.65;color:#3a3530;font-weight:300;}
+  .section.italic p{font-style:italic;font-family:'Fraunces',serif;}
+
+  .etags{display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.6rem;}
+  .etag{
+    font-size:0.73rem;padding:0.2rem 0.6rem;border-radius:20px;
+    background:rgba(0,0,0,0.05);color:#3a3530;
+  }
+
+  /* Harmony card */
+  .palette-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;}
+  .pal-label{font-size:0.71rem;color:var(--muted);width:70px;flex-shrink:0;}
+  .swatches{display:flex;gap:0.28rem;}
+  .sw{
+    width:31px;height:31px;border-radius:7px;
+    border:1px solid rgba(0,0,0,0.09);flex-shrink:0;
+    position:relative;cursor:default;
+  }
+  .sw.sel-border{box-shadow:0 0 0 2.5px #1a1712;}
+  .sw:hover::after{
+    content:attr(title);position:absolute;bottom:calc(100% + 4px);left:50%;
+    transform:translateX(-50%);background:#1a1712;color:#fff;
+    font-size:0.61rem;white-space:nowrap;padding:0.16rem 0.4rem;border-radius:4px;z-index:20;
+  }
+
+  .comp-vis{
+    display:flex;align-items:center;gap:0.65rem;padding:0.7rem 0.9rem;
+    background:rgba(0,0,0,0.03);border-radius:11px;margin-top:0.75rem;
+  }
+  .comp-sw{width:34px;height:34px;border-radius:50%;border:2px solid rgba(0,0,0,0.09);flex-shrink:0;}
+  .comp-txt{flex:1;text-align:center;font-size:0.78rem;color:var(--muted);
+    font-style:italic;font-family:'Fraunces',serif;}
+
+  .empty-state{
+    text-align:center;padding:2rem 1rem;color:var(--muted);
+    font-style:italic;font-family:'Fraunces',serif;font-size:0.93rem;
+  }
+
+  @keyframes popIn{from{opacity:0;transform:scale(0.94);}to{opacity:1;transform:scale(1);}}
+  .pop{animation:popIn 0.2s ease;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Krāsu Ritenis</h1>
+  <p>Maskas un to krāsojums · klikšķini uz krāsas, lai uzzinātu tās nozīmi</p>
+</header>
+
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:#D62B2B"></div>Pamatkrāsas</div>
+  <div class="leg"><div class="leg-dot" style="background:#E87722"></div>Papildkrāsas</div>
+  <div class="leg"><div class="leg-dot" style="background:#D9521A"></div>Vidējie toņi</div>
+</div>
+
+<div class="outer">
+
+  <!-- LEFT: canvas + harmony + B&W -->
+  <div class="left-col">
+    <canvas id="wheel" width="460" height="460"></canvas>
+    <p class="hint">↑ Klikšķini uz jebkura segmenta</p>
+
+    <div class="harmony-tabs">
+      <button class="htab active" data-mode="none">Viena krāsa</button>
+      <button class="htab" data-mode="complementary">Pretkrāsas</button>
+      <button class="htab" data-mode="analogous">Radniecīgās</button>
+      <button class="htab" data-mode="monochromatic">Monohroms</button>
+    </div>
+
+    <!-- Balta + Melna -->
+    <div class="bw-row">
+      <div class="bw-card white-card">
+        <div class="bw-name">Balta</div>
+        <div class="bw-tags">
+          <span class="bw-tag">Tīrība</span>
+          <span class="bw-tag">Nevainība</span>
+          <span class="bw-tag">Jauns sākums</span>
+        </div>
+        <div class="bw-text">Baltā maska simbolizē vienkāršību un mieru — tā ir tukšas lappuses krāsa, kas ļauj skatītājam pašam piepildīt tēlu ar jēgu.</div>
+      </div>
+      <div class="bw-card black-card">
+        <div class="bw-name">Melna</div>
+        <div class="bw-tags">
+          <span class="bw-tag">Elegance</span>
+          <span class="bw-tag">Autoritāte</span>
+          <span class="bw-tag">Noslēpums</span>
+        </div>
+        <div class="bw-text">Melnā maska slēpj identitāti viszināmāk — tā ir varas un neiznīcināmās slepenības krāsa, kas mākslā var simbolizēt arī skumjas vai nāvi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: info panel -->
+  <div class="right">
+    <div class="card" id="info-card">
+      <div class="empty-state" id="empty-msg">Izvēlies krāsu, uzspiežot uz riteņa</div>
+      <div id="color-content" style="display:none">
+        <div class="color-header">
+          <div class="color-circle" id="color-circle"></div>
+          <div class="color-meta">
+            <h2 id="color-name"></h2>
+            <span class="type-pill" id="type-pill"></span>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-label">Struktūra</div>
+          <p id="structure-text"></p>
+        </div>
+        <div class="section italic" style="margin-top:0.9rem;">
+          <div class="section-label">Maskas krāsojumā</div>
+          <div class="etags" id="etags"></div>
+          <p id="emotion-text"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="harmony-card" style="display:none">
+      <div class="card-label" id="harmony-label">Harmonija</div>
+      <div id="harmony-content"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  12-KRĀSU RYB ITTEN RITENIS — masku konteksts
+// ═══════════════════════════════════════════════
+const COLORS = [
+  {
+    name:'Sarkans', type:'primary', pure:'#D62B2B', mix:null,
+    structure:'Pamatkrāsa — nevar iegūt, jaucot citas krāsas. Viens no trim fundamentālajiem krāsu avotiem RYB sistēmā kopā ar zilo un dzelteno.',
+    tags:['Enerģija','Spēks','Kaislība','Agresija','Briesmas'],
+    emotion:'Sarkana maska piesaista skatienu pirmā — tā pārstāv enerģiju, spēku un kaislību. Karnevālos un teātrī sarkans tēls bieži ir varonis vai antagonists, kurš dominē skatuvē. Dažreiz tā var simbolizēt arī agresiju vai briesmas — skatītājs nekad nav pilnīgi mierā, redzot sarkanu seju.'
+  },
+  {
+    name:'Sarkani-oranžs', type:'tertiary', pure:'#D94A1A', mix:'Sarkans + Oranžs',
+    structure:'Vidējais tonis — rodas, jaucot pamatkrāsu (sarkanu) ar papildkrāsu (oranžu). Mantojot abu enerģiju, šis tonis ir karstāks un dinamiskāks par katru atsevišķi.',
+    tags:['Uguns','Vitalitāte','Drosme','Spriedze'],
+    emotion:'Sarkani-oranžā maska atgādina liesmu un iekšējo uguni. Tā piešķir tēlam nerimstoša darbotāja raksturu — karotājs, ugunsrādītājs, vētrainas dvēseles iemiesojums. Maskarādēs šī krāsa nozīmē, ka aiz maskas slēpjas kāds, kurš tūlīt dos impulsu rīcībai.'
+  },
+  {
+    name:'Oranžs', type:'secondary', pure:'#E87722', mix:'Sarkans + Dzeltens',
+    structure:'Papildkrāsa — rodas, jaucot sarkanu un dzeltenu vienādās proporcijās. Pretkrāsa: Zils.',
+    tags:['Prieks','Siltums','Radošums','Draudzīgums','Ražība'],
+    emotion:'Oranžā maska ir vismīļākā un vispieejamākā — tā nesatur sarkana bīstamību, bet saglabā tā dzīvīgumu. Teātrī un karnevālos oranžs tēls parasti ir jautrs, sociāls, radošs. Tā ir aktieru un klaunu krāsa — prieks bez agresijas.'
+  },
+  {
+    name:'Dzeltenīgi-oranžs', type:'tertiary', pure:'#D9A018', mix:'Dzeltens + Oranžs',
+    structure:'Vidējais tonis — rodas, jaucot pamatkrāsu (dzeltenu) ar papildkrāsu (oranžu). Mantojot abu siltumu, tas ir bagātu rudens toņu tonis.',
+    tags:['Siltums','Bagātība','Brandums','Gudrība'],
+    emotion:'Dzeltenīgi-oranžā maska evocē rudens nokrāsu gudrību un brandumu — tā ir pieredzējuša ceļotāja vai zvaigznāju pazinēja krāsa. Maskas ar šo toni piešķir tēlam cildenu, pat maģisku auru, it kā aiz sejas slēptos gadu desmitu pieredze.'
+  },
+  {
+    name:'Dzeltens', type:'primary', pure:'#E8D422', mix:null,
+    structure:'Pamatkrāsa — nevar iegūt, jaucot citas krāsas. Gaišākā no trim pamatkrāsām — vistuvāk saules gaismai.',
+    tags:['Saules gaisma','Optimisms','Prieks','Zelts','Greznība'],
+    emotion:'Dzeltenā maska nes saules gaismas un optimisma enerģiju — tā ir prieka un dzīvotprieka krāsa. Bieži asociē arī ar zeltu un greznības simbolu: ķēniņu, dievu un svēto attēlojumā dzeltens vai zeltains sejas krāsojums nozīmē augstāku esamību vai dievišķumu.'
+  },
+  {
+    name:'Dzelteni-zaļš', type:'tertiary', pure:'#82B828', mix:'Dzeltens + Zaļš',
+    structure:'Vidējais tonis — rodas, jaucot pamatkrāsu (dzeltenu) ar papildkrāsu (zaļu). Pavasara un jaunu sākumu tonis.',
+    tags:['Pavasaris','Augšana','Svaigums','Cerība','Jaunība'],
+    emotion:'Dzelteni-zaļā maska ir pavasara un jaunas dzīves simbols. Tā piešķir tēlam burvīgu, viegli neīstu raksturu — kā mežabjērni vai dabas gari folklorā. Maskas ar šo krāsu iedvesmo cerību un atjaunošanās sajūtu.'
+  },
+  {
+    name:'Zaļš', type:'secondary', pure:'#2D8A3E', mix:'Dzeltens + Zils',
+    structure:'Papildkrāsa — rodas, jaucot dzeltenu un zilu vienādās proporcijās. Pretkrāsa: Sarkans.',
+    tags:['Daba','Augšana','Veselība','Harmonija','Atjaunošanās'],
+    emotion:'Zaļa krāsa maskā simbolizē dabu, augšanu un veselību. Tā ir harmonijas un atjaunošanās krāsa — zaļš tēls mākslā vai teātrī bieži iemieso dabas spēkus, dziedinātājus vai vēl neskartus, tīrus raksturus. Zaļa maska mierina skatītāju.'
+  },
+  {
+    name:'Zilgani-zaļš', type:'tertiary', pure:'#1B7A6A', mix:'Zaļš + Zils',
+    structure:'Vidējais tonis — rodas, jaucot papildkrāsas (zaļu un zilu). Ūdens un dziļuma robeža.',
+    tags:['Jūra','Noslēpums','Dziļums','Klusums','Meditācija'],
+    emotion:'Zilgani-zaļā maska ved skatītāju dziļos ūdeņos — tā ir jūras radību, nāru un pazemes pasauļu krāsa. Maskas ar šo toni ir noslēpumainas un hipnotizējošas, tās liek aizmirst, kur beidzas realitāte un sākas mīts.'
+  },
+  {
+    name:'Zils', type:'primary', pure:'#1B4FB5', mix:null,
+    structure:'Pamatkrāsa — nevar iegūt, jaucot citas krāsas. Aukstākā no trim pamatkrāsām, visciešāk saistīta ar bezgalību un dziļumu.',
+    tags:['Mierīgums','Uzticamība','Stabilitāte','Debesis','Ūdens'],
+    emotion:'Zilā maska izsauc mierīgumu, uzticamību un stabilitāti. Zila krāsa bieži tiek asociēta ar debesīm un ūdeni — tēls zilā maskā šķiet sasniedzams, bet arī neizprotami dziļš. Teātrī zili tēli mēdz būt gudrie, vērotāji, filozofi vai ķēniņi.'
+  },
+  {
+    name:'Zilgani-violets', type:'tertiary', pure:'#4A2D9C', mix:'Zils + Violets',
+    structure:'Vidējais tonis — rodas, jaucot pamatkrāsu (zilu) ar papildkrāsu (violetu). Zilā meditācija sajaukta ar violetā garīgumu.',
+    tags:['Garīgums','Introspekcija','Noslēpums','Dižciltība','Maģija'],
+    emotion:'Zilgani-violetā maska atrodas starp redzamo un neredzamo pasauli. Tā ir maģijas un orākulu krāsa — viduslaiku mistērijās šādi tēli pārstāvēja starpniekus starp dievišķo un cilvēcisko. Maska ar šo toni liek skatītājam justies, ka redzamais tēls zina vairāk, nekā saka.'
+  },
+  {
+    name:'Violets', type:'secondary', pure:'#7B2D96', mix:'Sarkans + Zils',
+    structure:'Papildkrāsa — rodas, jaucot sarkanu un zilu. Pretkrāsa: Dzeltens. Vēsturiski visretākā un dārgākā krāsa — tiriešu purpurs bija ķēniņu un augstpriesteru ekskluzīva pazīme.',
+    tags:['Garīgums','Radošums','Noslēpums','Meditatīvs','Ezotērisks'],
+    emotion:'Violeta krāsa maskā nes garīguma, radošuma un noslēpuma noskaņu. Tā bieži tiek saistīta ar meditatīvām un ezotēriskām tēmām — violets tēls ir burvju, pravietošanas un mistisko rituālu iemiesojums. Vienlaikus sarkana kaislība un zilā klusums padara šo krāsu par visu emociju apkopojumu.'
+  },
+  {
+    name:'Sarkanīgi-violets', type:'tertiary', pure:'#A82864', mix:'Sarkans + Violets',
+    structure:'Vidējais tonis — rodas, jaucot pamatkrāsu (sarkanu) ar papildkrāsu (violetu). Violetā noslēpumainība savienota ar sarkana karstumu.',
+    tags:['Kaislība','Romantika','Intensitāte','Noslēpums','Tumšā skaistuma'],
+    emotion:'Sarkanīgi-violetā maska ir tumšās romantikas un dziļas kaislības krāsa. Tā piemērota tēliem, kas slēpj sarežģītas jūtas aiz glītas fasādes — Venēcijas balles mīlas intrigas, traģisku mīlētāju lomas. Šī krāsa ir intensīva un atcerāma.'
+  }
+];
+
+const BW = {
+  white:{ tags:['Tīrība','Vienkāršība','Nevainība','Jauns sākums','Miers'],
+    text:'Baltā maska simbolizē vienkāršību un mieru — tā ir tukšas lappuses krāsa, kas ļauj skatītājam pašam piepildīt tēlu ar jēgu.' },
+  black:{ tags:['Elegance','Autoritāte','Noslēpumainība','Skumjas','Nāve'],
+    text:'Melnā maska slēpj identitāti viszināmāk — tā ir varas un neiznīcināmās slepenības krāsa, kas mākslā var simbolizēt arī skumjas vai nāvi.' }
+};
+
+// ── UTILS ────────────────────────────────────────────────
+function hexToRgb(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+function rgbToHex(r,g,b){return'#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('');}
+function ringHex(seg,ring){
+  const[r,g,b]=hexToRgb(COLORS[seg].pure);
+  switch(ring){
+    case 0:return COLORS[seg].pure;
+    case 1:return rgbToHex(r+(255-r)*0.52,g+(255-g)*0.52,b+(255-b)*0.52);
+    case 2:return rgbToHex(r*0.6+128*0.4,g*0.6+128*0.4,b*0.6+128*0.4);
+    case 3:return rgbToHex(r*0.42,g*0.42,b*0.42);
+  }
+}
+function blendHex(h1,h2,t){
+  const[r1,g1,b1]=hexToRgb(h1),[r2,g2,b2]=hexToRgb(h2);
+  return rgbToHex(r1+(r2-r1)*t,g1+(g2-g1)*t,b1+(b2-b1)*t);
+}
+
+// ── CANVAS ───────────────────────────────────────────────
+const W=460,CX=W/2,CY=W/2,ROUT=210,RIN=46;
+const RBOUNDS=[[ROUT,ROUT*0.745],[ROUT*0.745,ROUT*0.53],[ROUT*0.53,ROUT*0.34],[ROUT*0.34,RIN]];
+const canvas=document.getElementById('wheel');
+const ctx=canvas.getContext('2d');
+let selSeg=null,selRing=null,hmode='none';
+
+function segAng(s){const st=Math.PI*2/12,b=s*st-Math.PI/2-st/2;return[b,b+st];}
+function segMid(s){const st=Math.PI*2/12;return s*st-Math.PI/2;}
+
+function drawArc(s,ring,hl){
+  const[a0,a1]=segAng(s),[r1,r2]=RBOUNDS[ring],g=0.016;
+  ctx.beginPath();
+  ctx.arc(CX,CY,r1,a0+g,a1-g);
+  ctx.arc(CX,CY,r2,a1-g,a0+g,true);
+  ctx.closePath();
+  ctx.fillStyle=ringHex(s,ring);ctx.fill();
+  if(hl){
+    ctx.fillStyle='rgba(255,255,255,0.26)';ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.95)';ctx.lineWidth=2.8;ctx.stroke();
+  }
+}
+
+function hlSet(){
+  if(selSeg===null)return new Set();
+  const s=selSeg,r=selRing??0,pairs=[];
+  switch(hmode){
+    case'none':pairs.push(`${s}-${r}`);break;
+    case'complementary':pairs.push(`${s}-${r}`,`${(s+6)%12}-${r}`);break;
+    case'analogous':[-2,-1,0,1,2].forEach(d=>pairs.push(`${(s+d+12)%12}-${r}`));break;
+    case'monochromatic':[0,1,2,3].forEach(ri=>pairs.push(`${s}-${ri}`));break;
+  }
+  return new Set(pairs);
+}
+
+function drawCenter(){
+  ctx.beginPath();ctx.arc(CX,CY,RIN+3,0,Math.PI*2);
+  ctx.fillStyle='#F7F3EE';ctx.fill();
+  const ir=RIN-4;
+  if(selSeg!==null&&hmode==='monochromatic'){
+    ctx.beginPath();ctx.arc(CX,CY,ir,0,Math.PI*2);
+    ctx.fillStyle=COLORS[selSeg].pure;ctx.fill();return;
+  }
+  const triR=ir*0.92;
+  const pAngles=[segMid(0)-Math.PI/2,segMid(4)-Math.PI/2,segMid(8)-Math.PI/2];
+  const pts=pAngles.map(a=>[CX+triR*Math.cos(a),CY+triR*Math.sin(a)]);
+  const tc=['#D62B2B','#E8D422','#1B4FB5'];
+  for(let i=0;i<3;i++){
+    const a=pts[i],b=pts[(i+1)%3];
+    ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.lineTo(CX,CY);ctx.closePath();
+    const grd=ctx.createLinearGradient(a[0],a[1],CX,CY);
+    grd.addColorStop(0,tc[i]);grd.addColorStop(1,blendHex(tc[i],tc[(i+1)%3],0.5));
+    ctx.fillStyle=grd;ctx.fill();
+  }
+  ctx.beginPath();pts.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();
+  ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=1.4;ctx.stroke();
+}
+
+function drawWheel(){
+  ctx.clearRect(0,0,W,W);
+  const hl=hlSet(),any=selSeg!==null;
+  for(let ring=0;ring<4;ring++){
+    for(let s=0;s<12;s++){
+      drawArc(s,ring,hl.has(`${s}-${ring}`));
+      if(any&&!hl.has(`${s}-${ring}`)){
+        const[a0,a1]=segAng(s),[r1,r2]=RBOUNDS[ring],g=0.016;
+        ctx.beginPath();ctx.arc(CX,CY,r1,a0+g,a1-g);ctx.arc(CX,CY,r2,a1-g,a0+g,true);ctx.closePath();
+        ctx.fillStyle='rgba(247,243,238,0.6)';ctx.fill();
+      }
+    }
+  }
+  for(const k of hl){const[ss,rr]=k.split('-').map(Number);drawArc(ss,rr,true);}
+  for(const[r1]of RBOUNDS){
+    ctx.beginPath();ctx.arc(CX,CY,r1,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,0,0,0.17)';ctx.lineWidth=0.8;ctx.stroke();
+  }
+  // type markers
+  for(let s=0;s<12;s++){
+    const[a0,a1]=segAng(s),mid=(a0+a1)/2,mr=ROUT+10;
+    const mx=CX+mr*Math.cos(mid),my=CY+mr*Math.sin(mid);
+    ctx.beginPath();ctx.arc(mx,my,3.5,0,Math.PI*2);
+    ctx.fillStyle=[0,4,8].includes(s)?'#c8920a':[2,6,10].includes(s)?'rgba(0,0,0,0.28)':'rgba(0,0,0,0.12)';
+    ctx.fill();
+  }
+  drawCenter();
+}
+
+// ── HIT TEST ─────────────────────────────────────────────
+function hitTest(x,y){
+  const dx=x-CX,dy=y-CY,dist=Math.sqrt(dx*dx+dy*dy);
+  if(dist<RIN||dist>ROUT)return null;
+  let ring=null;
+  for(let ri=0;ri<4;ri++){const[r1,r2]=RBOUNDS[ri];if(dist<=r1&&dist>=r2){ring=ri;break;}}
+  if(ring===null)return null;
+  let angle=Math.atan2(dy,dx)+Math.PI/2;
+  if(angle<0)angle+=Math.PI*2;
+  return{seg:Math.floor(angle/(Math.PI*2)*12)%12,ring};
+}
+
+canvas.addEventListener('click',e=>{
+  const rc=canvas.getBoundingClientRect(),sx=W/rc.width,sy=W/rc.height;
+  const hit=hitTest((e.clientX-rc.left)*sx,(e.clientY-rc.top)*sy);
+  if(!hit)return;
+  selSeg=hit.seg;selRing=hit.ring;
+  drawWheel();updatePanel();
+});
+canvas.addEventListener('mousemove',e=>{
+  const rc=canvas.getBoundingClientRect(),sx=W/rc.width,sy=W/rc.height;
+  canvas.style.cursor=hitTest((e.clientX-rc.left)*sx,(e.clientY-rc.top)*sy)?'pointer':'default';
+});
+
+// ── PANEL ────────────────────────────────────────────────
+function updatePanel(){
+  if(selSeg===null)return;
+  const c=COLORS[selSeg],r=selRing??0,hex=ringHex(selSeg,r);
+  document.getElementById('empty-msg').style.display='none';
+  const cont=document.getElementById('color-content');
+  cont.style.display='block';cont.classList.remove('pop');void cont.offsetWidth;cont.classList.add('pop');
+
+  const circ=document.getElementById('color-circle');
+  circ.style.background=hex;circ.style.boxShadow=`0 4px 16px ${hex}50`;
+
+  document.getElementById('color-name').textContent=c.name;
+  const pill=document.getElementById('type-pill');
+  const tm={primary:'Pamatkrāsa',secondary:'Papildkrāsa',tertiary:'Vidējais tonis'};
+  const cm={primary:'pill-primary',secondary:'pill-secondary',tertiary:'pill-tertiary'};
+  pill.textContent=tm[c.type];pill.className='type-pill '+cm[c.type];
+
+  let st=c.structure;
+  if(r>0){const rd=['','Šis ir tints — sajaukts ar baltu, padarot krāsu gaišāku un maigāku.','Šis ir tonis — sajaukts ar pelēku, padarot krāsu klusinātu un neitrālu.','Šis ir shade — sajaukts ar melnu, padarot krāsu dziļāku un smagāku.'];st+=' '+rd[r];}
+  document.getElementById('structure-text').textContent=st;
+
+  const etags=document.getElementById('etags');
+  etags.innerHTML=c.tags.map(t=>`<span class="etag">${t}</span>`).join('');
+  document.getElementById('emotion-text').textContent=c.emotion;
+
+  updateHarmony();
+}
+
+function updateHarmony(){
+  const hcard=document.getElementById('harmony-card');
+  if(selSeg===null||hmode==='none'){hcard.style.display='none';return;}
+  hcard.style.display='block';
+  const r=selRing??0;
+  const lm={complementary:'Pretkrāsas',analogous:'Radniecīgās krāsas',monochromatic:'Monohromātiskā harmonija'};
+  document.getElementById('harmony-label').textContent=lm[hmode];
+  const cont=document.getElementById('harmony-content');
+
+  if(hmode==='complementary'){
+    const cs=(selSeg+6)%12;
+    cont.innerHTML=`<div class="comp-vis">
+      <div class="comp-sw" style="background:${ringHex(selSeg,r)}" title="${COLORS[selSeg].name}"></div>
+      <div class="comp-txt">${COLORS[selSeg].name} ↔ ${COLORS[cs].name}</div>
+      <div class="comp-sw" style="background:${ringHex(cs,r)}" title="${COLORS[cs].name}"></div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:0.75rem;line-height:1.6;font-weight:300;">
+      Pretkrāsas rada maksimālu kontrastu. Maskā izmantojot abu krāsas, tās pastiprina viena otras iedarbību un emocionālo nozīmi.
+    </p>`;
+  } else if(hmode==='analogous'){
+    const segs=[-2,-1,0,1,2].map(d=>(selSeg+d+12)%12);
+    cont.innerHTML=`<div class="palette-row">
+      <span class="pal-label">5 krāsas</span>
+      <div class="swatches">${segs.map(s=>`<div class="sw${s===selSeg?' sel-border':''}" style="background:${ringHex(s,r)}" title="${COLORS[s].name}"></div>`).join('')}</div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:0.75rem;line-height:1.6;font-weight:300;">
+      Radniecīgās krāsas rada harmonisku, dabisku pāreju. Maskas ar šādu toņu gammu sniedz mierīgu, saskaņotu iespaidu.
+    </p>`;
+  } else {
+    cont.innerHTML=`<div class="palette-row">
+      <span class="pal-label">4 variācijas</span>
+      <div class="swatches">${[0,1,2,3].map(ri=>`<div class="sw${ri===r?' sel-border':''}" style="background:${ringHex(selSeg,ri)}" title="${['Tīra','Tints','Tonis','Shade'][ri]}"></div>`).join('')}</div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--muted);margin-top:0.75rem;line-height:1.6;font-weight:300;">
+      Vienas krāsas tīra, gaišāka, pelēkota un tumšāka variācija. Monohromātiska maska rada spēcīgu, vienotu iespaidu.
+    </p>`;
+  }
+}
+
+document.querySelectorAll('.htab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.htab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');hmode=btn.dataset.mode;
+    drawWheel();updateHarmony();
+  });
+});
+
+function resize(){const w=Math.min(window.innerWidth-32,460);canvas.style.width=w+'px';canvas.style.height=w+'px';}
+drawWheel();resize();
+window.addEventListener('resize',resize);
+</script>
+</body>
+</html>
