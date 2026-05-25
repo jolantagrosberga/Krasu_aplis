@@ -14,8 +14,8 @@
   body{
     background:var(--bg);color:var(--text);
     font-family:'DM Sans',sans-serif;
-    min-height:100vh;display:flex;flex-direction:column;
-    align-items:center;padding:2.5rem 1rem 5rem;
+    display:flex;flex-direction:column;
+    align-items:center;padding:2rem 1rem 3rem;
   }
   header{text-align:center;margin-bottom:1.8rem;}
   header h1{
@@ -23,28 +23,28 @@
     font-size:clamp(1.7rem,4vw,2.6rem);letter-spacing:-0.03em;
   }
   header p{color:var(--muted);font-size:0.88rem;margin-top:0.4rem;font-weight:300;}
-
+ 
   /* LEGEND */
   .legend{display:flex;gap:1.6rem;margin-bottom:2rem;flex-wrap:wrap;justify-content:center;}
   .leg{display:flex;align-items:center;gap:0.45rem;font-size:0.76rem;color:var(--muted);}
   .leg-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.18);}
-
+ 
   /* OUTER LAYOUT: wheel-col | right-col */
   .outer{
     display:flex;gap:2rem;align-items:flex-start;
-    width:100%;max-width:1120px;flex-wrap:wrap;justify-content:center;
+    width:100%;max-width:1120px;
   }
-
+ 
   /* LEFT COL: canvas + b/w cards stacked */
   .left-col{
     display:flex;flex-direction:column;align-items:center;gap:1.2rem;
-    flex-shrink:0;
+    flex-shrink:0;min-width:0;
   }
-
-  #wheel{cursor:default;filter:drop-shadow(0 8px 28px rgba(0,0,0,0.13));}
-
+ 
+  #wheel{cursor:default;filter:drop-shadow(0 8px 28px rgba(0,0,0,0.13));max-width:100%;}
+ 
   .hint{font-size:0.74rem;color:var(--muted);text-align:center;}
-
+ 
   /* Harmony tabs */
   .harmony-tabs{
     display:flex;gap:0.35rem;background:rgba(0,0,0,0.06);
@@ -58,22 +58,22 @@
   }
   .htab:hover{color:var(--text);background:rgba(0,0,0,0.05);}
   .htab.active{background:#fff;color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.11);}
-
+ 
   /* B&W cards row */
   .bw-row{
     display:flex;gap:0.8rem;width:100%;max-width:460px;
   }
-
+ 
   .bw-card{
     flex:1;border-radius:16px;padding:1rem 1.1rem;
     cursor:default;border:1px solid var(--border);
     transition:box-shadow 0.2s;
   }
   .bw-card:hover{box-shadow:0 4px 18px rgba(0,0,0,0.1);}
-
+ 
   .bw-card.white-card{background:#fff;}
   .bw-card.black-card{background:#1a1712;color:#f0ece4;border-color:#000;}
-
+ 
   .bw-card .bw-name{
     font-family:'Fraunces',serif;font-weight:700;font-size:1rem;
     margin-bottom:0.3rem;
@@ -90,11 +90,12 @@
     font-family:'Fraunces',serif;font-style:italic;
     font-size:0.78rem;line-height:1.6;opacity:0.75;
   }
-
+ 
   /* RIGHT PANEL */
   .right{
-    flex:1;min-width:280px;max-width:420px;
+    flex:1;min-width:300px;max-width:430px;
     display:flex;flex-direction:column;gap:1rem;
+    position:sticky;top:1rem;align-self:flex-start;
   }
   .card{
     background:var(--surface);border:1px solid var(--border);
@@ -104,7 +105,7 @@
     font-size:0.63rem;font-weight:500;letter-spacing:0.14em;
     text-transform:uppercase;color:var(--muted);margin-bottom:0.8rem;
   }
-
+ 
   /* Color info */
   .color-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
   .color-circle{
@@ -123,7 +124,7 @@
   .pill-primary  {background:#FFF3CD;color:#8a6300;}
   .pill-secondary{background:#E8F4E8;color:#2d6a2d;}
   .pill-tertiary {background:#f0f0f0;color:#5a5a5a;}
-
+ 
   .section{border-top:1px solid var(--border);padding-top:0.9rem;margin-top:0.2rem;}
   .section-label{
     font-size:0.67rem;font-weight:500;letter-spacing:0.1em;
@@ -131,13 +132,13 @@
   }
   .section p{font-size:0.83rem;line-height:1.65;color:#3a3530;font-weight:300;}
   .section.italic p{font-style:italic;font-family:'Fraunces',serif;}
-
+ 
   .etags{display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.6rem;}
   .etag{
     font-size:0.73rem;padding:0.2rem 0.6rem;border-radius:20px;
     background:rgba(0,0,0,0.05);color:#3a3530;
   }
-
+ 
   /* Harmony card */
   .palette-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;}
   .pal-label{font-size:0.71rem;color:var(--muted);width:70px;flex-shrink:0;}
@@ -153,7 +154,7 @@
     transform:translateX(-50%);background:#1a1712;color:#fff;
     font-size:0.61rem;white-space:nowrap;padding:0.16rem 0.4rem;border-radius:4px;z-index:20;
   }
-
+ 
   .comp-vis{
     display:flex;align-items:center;gap:0.65rem;padding:0.7rem 0.9rem;
     background:rgba(0,0,0,0.03);border-radius:11px;margin-top:0.75rem;
@@ -161,42 +162,49 @@
   .comp-sw{width:34px;height:34px;border-radius:50%;border:2px solid rgba(0,0,0,0.09);flex-shrink:0;}
   .comp-txt{flex:1;text-align:center;font-size:0.78rem;color:var(--muted);
     font-style:italic;font-family:'Fraunces',serif;}
-
+ 
   .empty-state{
     text-align:center;padding:2rem 1rem;color:var(--muted);
     font-style:italic;font-family:'Fraunces',serif;font-size:0.93rem;
   }
-
+ 
+ 
+  /* Responsive: narrow screens stack vertically */
+  @media(max-width:780px){
+    .outer{flex-direction:column;align-items:center;}
+    .right{position:static;max-width:100%;width:100%;}
+  }
   @keyframes popIn{from{opacity:0;transform:scale(0.94);}to{opacity:1;transform:scale(1);}}
   .pop{animation:popIn 0.2s ease;}
 </style>
 </head>
 <body>
-
+ 
 <header>
+  <h1>Krāsu Ritenis</h1>
   <p>Maskas un to krāsojums · klikšķini uz krāsas, lai uzzinātu tās nozīmi</p>
 </header>
-
+ 
 <div class="legend">
   <div class="leg"><div class="leg-dot" style="background:#D62B2B"></div>Pamatkrāsas</div>
   <div class="leg"><div class="leg-dot" style="background:#E87722"></div>Papildkrāsas</div>
   <div class="leg"><div class="leg-dot" style="background:#D9521A"></div>Vidējie toņi</div>
 </div>
-
+ 
 <div class="outer">
-
+ 
   <!-- LEFT: canvas + harmony + B&W -->
   <div class="left-col">
     <canvas id="wheel" width="460" height="460"></canvas>
     <p class="hint">↑ Klikšķini uz jebkura segmenta</p>
-
+ 
     <div class="harmony-tabs">
       <button class="htab active" data-mode="none">Viena krāsa</button>
       <button class="htab" data-mode="complementary">Pretkrāsas</button>
       <button class="htab" data-mode="analogous">Radniecīgās</button>
       <button class="htab" data-mode="monochromatic">Monohroms</button>
     </div>
-
+ 
     <!-- Balta + Melna -->
     <div class="bw-row">
       <div class="bw-card white-card">
@@ -219,7 +227,7 @@
       </div>
     </div>
   </div>
-
+ 
   <!-- RIGHT: info panel -->
   <div class="right">
     <div class="card" id="info-card">
@@ -243,15 +251,15 @@
         </div>
       </div>
     </div>
-
+ 
     <div class="card" id="harmony-card" style="display:none">
       <div class="card-label" id="harmony-label">Harmonija</div>
       <div id="harmony-content"></div>
     </div>
   </div>
-
+ 
 </div>
-
+ 
 <script>
 // ═══════════════════════════════════════════════
 //  12-KRĀSU RYB ITTEN RITENIS — masku konteksts
@@ -330,14 +338,14 @@ const COLORS = [
     emotion:'Sarkanīgi-violetā maska ir tumšās romantikas un dziļas kaislības krāsa. Tā piemērota tēliem, kas slēpj sarežģītas jūtas aiz glītas fasādes — Venēcijas balles mīlas intrigas, traģisku mīlētāju lomas. Šī krāsa ir intensīva un atcerāma.'
   }
 ];
-
+ 
 const BW = {
   white:{ tags:['Tīrība','Vienkāršība','Nevainība','Jauns sākums','Miers'],
     text:'Baltā maska simbolizē vienkāršību un mieru — tā ir tukšas lappuses krāsa, kas ļauj skatītājam pašam piepildīt tēlu ar jēgu.' },
   black:{ tags:['Elegance','Autoritāte','Noslēpumainība','Skumjas','Nāve'],
     text:'Melnā maska slēpj identitāti viszināmāk — tā ir varas un neiznīcināmās slepenības krāsa, kas mākslā var simbolizēt arī skumjas vai nāvi.' }
 };
-
+ 
 // ── UTILS ────────────────────────────────────────────────
 function hexToRgb(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
 function rgbToHex(r,g,b){return'#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('');}
@@ -354,17 +362,17 @@ function blendHex(h1,h2,t){
   const[r1,g1,b1]=hexToRgb(h1),[r2,g2,b2]=hexToRgb(h2);
   return rgbToHex(r1+(r2-r1)*t,g1+(g2-g1)*t,b1+(b2-b1)*t);
 }
-
+ 
 // ── CANVAS ───────────────────────────────────────────────
 const W=460,CX=W/2,CY=W/2,ROUT=210,RIN=46;
 const RBOUNDS=[[ROUT,ROUT*0.745],[ROUT*0.745,ROUT*0.53],[ROUT*0.53,ROUT*0.34],[ROUT*0.34,RIN]];
 const canvas=document.getElementById('wheel');
 const ctx=canvas.getContext('2d');
 let selSeg=null,selRing=null,hmode='none';
-
+ 
 function segAng(s){const st=Math.PI*2/12,b=s*st-Math.PI/2-st/2;return[b,b+st];}
 function segMid(s){const st=Math.PI*2/12;return s*st-Math.PI/2;}
-
+ 
 function drawArc(s,ring,hl){
   const[a0,a1]=segAng(s),[r1,r2]=RBOUNDS[ring],g=0.016;
   ctx.beginPath();
@@ -377,7 +385,7 @@ function drawArc(s,ring,hl){
     ctx.strokeStyle='rgba(255,255,255,0.95)';ctx.lineWidth=2.8;ctx.stroke();
   }
 }
-
+ 
 function hlSet(){
   if(selSeg===null)return new Set();
   const s=selSeg,r=selRing??0,pairs=[];
@@ -389,7 +397,7 @@ function hlSet(){
   }
   return new Set(pairs);
 }
-
+ 
 function drawCenter(){
   ctx.beginPath();ctx.arc(CX,CY,RIN+3,0,Math.PI*2);
   ctx.fillStyle='#F7F3EE';ctx.fill();
@@ -412,7 +420,7 @@ function drawCenter(){
   ctx.beginPath();pts.forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();
   ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=1.4;ctx.stroke();
 }
-
+ 
 function drawWheel(){
   ctx.clearRect(0,0,W,W);
   const hl=hlSet(),any=selSeg!==null;
@@ -441,7 +449,7 @@ function drawWheel(){
   }
   drawCenter();
 }
-
+ 
 // ── HIT TEST ─────────────────────────────────────────────
 function hitTest(x,y){
   const dx=x-CX,dy=y-CY,dist=Math.sqrt(dx*dx+dy*dy);
@@ -453,7 +461,7 @@ function hitTest(x,y){
   if(angle<0)angle+=Math.PI*2;
   return{seg:Math.floor(angle/(Math.PI*2)*12)%12,ring};
 }
-
+ 
 canvas.addEventListener('click',e=>{
   const rc=canvas.getBoundingClientRect(),sx=W/rc.width,sy=W/rc.height;
   const hit=hitTest((e.clientX-rc.left)*sx,(e.clientY-rc.top)*sy);
@@ -465,7 +473,7 @@ canvas.addEventListener('mousemove',e=>{
   const rc=canvas.getBoundingClientRect(),sx=W/rc.width,sy=W/rc.height;
   canvas.style.cursor=hitTest((e.clientX-rc.left)*sx,(e.clientY-rc.top)*sy)?'pointer':'default';
 });
-
+ 
 // ── PANEL ────────────────────────────────────────────────
 function updatePanel(){
   if(selSeg===null)return;
@@ -473,27 +481,27 @@ function updatePanel(){
   document.getElementById('empty-msg').style.display='none';
   const cont=document.getElementById('color-content');
   cont.style.display='block';cont.classList.remove('pop');void cont.offsetWidth;cont.classList.add('pop');
-
+ 
   const circ=document.getElementById('color-circle');
   circ.style.background=hex;circ.style.boxShadow=`0 4px 16px ${hex}50`;
-
+ 
   document.getElementById('color-name').textContent=c.name;
   const pill=document.getElementById('type-pill');
   const tm={primary:'Pamatkrāsa',secondary:'Papildkrāsa',tertiary:'Vidējais tonis'};
   const cm={primary:'pill-primary',secondary:'pill-secondary',tertiary:'pill-tertiary'};
   pill.textContent=tm[c.type];pill.className='type-pill '+cm[c.type];
-
+ 
   let st=c.structure;
   if(r>0){const rd=['','Šis ir tints — sajaukts ar baltu, padarot krāsu gaišāku un maigāku.','Šis ir tonis — sajaukts ar pelēku, padarot krāsu klusinātu un neitrālu.','Šis ir shade — sajaukts ar melnu, padarot krāsu dziļāku un smagāku.'];st+=' '+rd[r];}
   document.getElementById('structure-text').textContent=st;
-
+ 
   const etags=document.getElementById('etags');
   etags.innerHTML=c.tags.map(t=>`<span class="etag">${t}</span>`).join('');
   document.getElementById('emotion-text').textContent=c.emotion;
-
+ 
   updateHarmony();
 }
-
+ 
 function updateHarmony(){
   const hcard=document.getElementById('harmony-card');
   if(selSeg===null||hmode==='none'){hcard.style.display='none';return;}
@@ -502,7 +510,7 @@ function updateHarmony(){
   const lm={complementary:'Pretkrāsas',analogous:'Radniecīgās krāsas',monochromatic:'Monohromātiskā harmonija'};
   document.getElementById('harmony-label').textContent=lm[hmode];
   const cont=document.getElementById('harmony-content');
-
+ 
   if(hmode==='complementary'){
     const cs=(selSeg+6)%12;
     cont.innerHTML=`<div class="comp-vis">
@@ -532,7 +540,7 @@ function updateHarmony(){
     </p>`;
   }
 }
-
+ 
 document.querySelectorAll('.htab').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.htab').forEach(b=>b.classList.remove('active'));
@@ -540,8 +548,24 @@ document.querySelectorAll('.htab').forEach(btn=>{
     drawWheel();updateHarmony();
   });
 });
-
-function resize(){const w=Math.min(window.innerWidth-32,460);canvas.style.width=w+'px';canvas.style.height=w+'px';}
+ 
+ 
+  // Auto-report height to parent for iFrame resizing
+  function reportHeight(){
+    const h = document.body.scrollHeight;
+    window.parent.postMessage({iframeHeight: h}, '*');
+  }
+  window.addEventListener('load', reportHeight);
+  window.addEventListener('resize', reportHeight);
+  // Also report after any click (content may change height)
+  document.addEventListener('click', function(){ setTimeout(reportHeight, 300); });
+ 
+  function resize(){
+  const avail = Math.min(window.innerWidth - 32, 460);
+  const w = window.innerWidth < 780 ? avail : Math.min(avail, Math.floor((window.innerWidth - 64) * 0.55));
+  canvas.style.width = w + 'px';
+  canvas.style.height = w + 'px';
+}
 drawWheel();resize();
 window.addEventListener('resize',resize);
 </script>
